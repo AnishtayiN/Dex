@@ -64,7 +64,17 @@ class ShizukuCommandExecutor(
         }
         val args = Shizuku.UserServiceArgs(
             ComponentName(appContext.packageName, PrivilegedCommandService::class.java.name),
-        ).daemon(false)
+        )
+            .daemon(false)
+            // Required: without a process name suffix Shizuku refuses
+            // to start the service with "process name suffix must not
+            // be null", and every command then fails in ~1 ms with a
+            // null exit code before ART is ever reached. The suffix
+            // must match the service's android:process in the
+            // manifest (":service"). Bump version() only when the
+            // Binder protocol in PrivilegedCommandService changes.
+            .processNameSuffix("service")
+            .version(1)
         try {
             Shizuku.bindUserService(args, connection)
         } catch (e: Exception) {

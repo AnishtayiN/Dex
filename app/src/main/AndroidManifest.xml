@@ -46,6 +46,7 @@
              comes from Shizuku starting it, not from this declaration. -->
         <service
             android:name=".shizuku.PrivilegedCommandService"
+            android:process=":service"
             android:exported="true" />
     </application>
 </manifest>

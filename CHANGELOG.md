@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+- Fix Shizuku UserService binding: the executor now sets
+  `processNameSuffix("service")` (matching the service's
+  `android:process=":service"` in the manifest). Without it Shizuku
+  refused to start the service with "process name suffix must not
+  be null", so every compilation failed in ~1 ms with a null exit
+  code before ART was ever reached.
 - Fix Queue screen showing "ART compilation completed" and a green
   "Done" chip even when every item failed. The finished title now
   says failed (0 completed) or finished with failures (mixed), and a
