@@ -1,0 +1,91 @@
+name: Build and Release APK
+
+# Manual release workflow for DexBoost.
+#
+# How to use (the GitHub App cannot push workflow files, so add this
+# file by hand in the GitHub web UI):
+#   1. In the Dex repository, go to Add file > Create new file.
+#   2. Set the path to: .github/workflows/release-apk.yml
+#   3. Paste this whole file and commit it directly to main.
+#   4. Go to Actions > Build and Release APK > Run workflow.
+#   5. Enter a NEW version each time (for example 1.0.0, then 1.0.1).
+#      Re-using a version that already has a release will fail on
+#      purpose, so the same tag is never overwritten.
+#   6. After the run finishes, the APK appears under Releases.
+#
+# What it builds:
+#   - A debug APK (signed with the standard debug key, so it installs
+#     directly on a phone without any signing setup).
+#   - One universal APK, not per-ABI splits, so the same file installs
+#     on any supported device.
+#   - Minimum Android 7.0 (API 24) up to the latest Android, because
+#     the app's minSdk is 24 and targetSdk is 31. On Android 14 and
+#     newer the app still installs, but the system may reject the
+#     legacy `cmd package compile` command; DexBoost reports that
+#     truthfully instead of pretending it worked.
+#   - It deliberately does NOT use ./gradlew, because the Gradle
+#     wrapper jar is a binary file that is not in the repository.
+#     It uses the installed Gradle 8.7 instead, matching the wrapper.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version, without a leading v (for example: 1.0.0)"
+        required: true
+        default: "1.0.0"
+      notes:
+        description: "Release notes shown on the Releases page"
+        required: false
+        default: "DexBoost debug APK, built from main. Installable on Android 7.0 and newer. Performance improvements are not guaranteed."
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle 8.7
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: "8.7"
+
+      - name: Build debug APK
+        run: gradle assembleDebug
+
+      - name: Rename APK for the release
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk "DexBoost-v${{ inputs.version }}.apk"
+          ls -lh "DexBoost-v${{ inputs.version }}.apk"
+
+      - name: Stop if this version already has a release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "v${{ inputs.version }}" >/dev/null 2>&1; then
+            echo "Release v${{ inputs.version }} already exists. Run again with a new version."
+            exit 1
+          fi
+
+      - name: Create GitHub Release with the APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v${{ inputs.version }}" \
+            --title "DexBoost ${{ inputs.version }}" \
+            --notes "${{ inputs.notes }}" \
+            --target main \
+            "DexBoost-v${{ inputs.version }}.apk"
