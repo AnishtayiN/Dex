@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Splash / activity theme before Compose takes over. Compose theme
+         (DexBoostTheme) governs everything once setContent runs. -->
+    <style name="Theme.DexBoost" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">#FF121214</item>
+        <item name="android:colorBackground">#FF121214</item>
+        <item name="android:textColor">#FFEDEDEF</item>
+    </style>
+</resources>
