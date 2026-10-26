@@ -57,14 +57,28 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          # The default for this action is only "tools platform-tools".
+          # DexBoost needs the Android 34 platform and build-tools
+          # 34.0.0, so install them explicitly; otherwise the build
+          # fails with "platform android-34 not found" or
+          # "Failed to find Build Tools revision 34.0.0".
+          packages: "platform-tools platforms;android-34 build-tools;34.0.0"
 
       - name: Set up Gradle 8.7
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.7"
 
+      - name: Check SDK and Gradle
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          ls "$ANDROID_HOME/platforms" || true
+          ls "$ANDROID_HOME/build-tools" || true
+          gradle --version
+
       - name: Build debug APK
-        run: gradle assembleDebug
+        run: gradle assembleDebug --stacktrace
 
       - name: Rename APK for the release
         run: |
