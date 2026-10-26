@@ -105,11 +105,13 @@ language, and hosts the navigation graph.
   the compile SDK above).
 - A device for real testing: Poco X3 Pro, Android 12 / MIUI, no
   root, Shizuku installed (see Shizuku setup). The app itself runs
-  on Android 8.0 (API 26) and newer.
+  on Android 7.0 (API 24) and newer. On Android 7 the games-only filter
+  cannot identify games (the category API arrived in Android 8.0), so
+  use search there instead.
 
 ### SDK versions — deliberate choices
 
-- `minSdk = 26` (Android 8.0), `targetSdk = 31` (Android 12),
+- `minSdk = 24` (Android 7.0), `targetSdk = 31` (Android 12),
   `compileSdk = 34`. Targeting 31 is deliberate: it is the primary
   test device's version, and it avoids opting into the behaviour
   changes of Android 13/14. In particular, Android 14 replaces

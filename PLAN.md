@@ -1,6 +1,6 @@
 # DexBoost implementation plan (Phase 1)
 - Target device: Poco X3 Pro, Android 12 / MIUI, no root, Shizuku via wireless debugging/ADB.
-- minSdk 26, targetSdk 31 (Android 12), compileSdk 34. compileSdk 34 > targetSdk is deliberate:
+- minSdk 24 (Android 7.0), targetSdk 31 (Android 12), compileSdk 34. compileSdk 34 > targetSdk is deliberate:
   building against 34 APIs while behaviour-targeting 31 keeps the app testable on the
   target device and avoids silently lowering the SDK. Behaviour changes of 32-34 are
   NOT opted into because targetSdk stays 31; check on Android 13/14 devices before

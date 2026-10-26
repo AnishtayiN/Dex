@@ -9,7 +9,7 @@ android {
     compileSdk = 34
     defaultConfig {
         applicationId = "com.dexboost"
-        minSdk = 26
+        minSdk = 24
         targetSdk = 31
         versionCode = 1
         versionName = "1.0.0"

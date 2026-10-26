@@ -80,7 +80,12 @@ class PackageManagerInstalledAppsRepository(context: Context) : InstalledAppsRep
         return InstalledApp(
             packageName = packageName,
             label = label,
-            isGame = appInfo.category == ApplicationInfo.CATEGORY_GAME,
+            // ApplicationInfo.category exists only from API 26. On Android 7
+            // (API 24-25) reading it would fail, so games are simply not
+            // flagged there; the games-only filter therefore cannot
+            // identify games on Android 7, and search should be used instead.
+            isGame = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+                appInfo.category == ApplicationInfo.CATEGORY_GAME,
             isSystem = appInfo.isSystemApp(),
             versionName = packageInfo?.versionName,
             // firstInstallTime has existed since API 9, so no SDK
