@@ -79,6 +79,8 @@
     <string name="queue_counts">%1$d انجام شده · %2$d ناموفق · %3$d باقی‌مانده</string>
     <string name="queue_cancel">لغو صف</string>
     <string name="queue_art_completed">کامپایل ART به پایان رسید</string>
+    <string name="queue_art_failed">کامپایل ART ناموفق بود</string>
+    <string name="queue_art_finished_mixed">کامپایل ART با خطا به پایان رسید</string>
     <string name="queue_summary_text">%1$d انجام شده · %2$d ناموفق · %3$d مجموع</string>
     <string name="queue_summary_note">فقط کدهای خروج و خروجی‌های بالا گزارش می‌شوند. هیچ افزایش سرعت یا باتری ادعا نمی‌شود.</string>
     <string name="queue_status_queued">در صف</string>

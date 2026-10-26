@@ -1,5 +1,10 @@
 # Changelog
 ## Unreleased
+- Fix Queue screen showing "ART compilation completed" and a green
+  "Done" chip even when every item failed. The finished title now
+  says failed (0 completed) or finished with failures (mixed), and a
+  finished item's chip shows its actual outcome (Failed, Permission
+  denied, Unknown, ...), with its error text shown in the queue.
 - Minimum Android lowered from 8.0 (API 26) to 7.0 (API 24). The only
   API 26-only usage, `ApplicationInfo.category` for game detection, is
   now guarded, so on Android 7 games are not flagged and the games-only

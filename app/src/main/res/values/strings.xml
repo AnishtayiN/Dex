@@ -79,6 +79,8 @@
     <string name="queue_counts">%1$d completed · %2$d failed · %3$d remaining</string>
     <string name="queue_cancel">Cancel queue</string>
     <string name="queue_art_completed">ART compilation completed</string>
+    <string name="queue_art_failed">ART compilation failed</string>
+    <string name="queue_art_finished_mixed">ART compilation finished with failures</string>
     <string name="queue_summary_text">%1$d completed · %2$d failed · %3$d total</string>
     <string name="queue_summary_note">Only the exit codes and outputs above are reported. No speed or battery gain is claimed.</string>
     <string name="queue_status_queued">Queued</string>

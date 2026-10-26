@@ -63,7 +63,17 @@ fun QueueScreen(
                     Text(text = stringResource(R.string.queue_current, it))
                 }
                 if (isFinished) {
-                    SectionCard(titleRes = R.string.queue_art_completed) {
+                    // The title must reflect the outcome, not just that
+                    // the batch ended. A batch with 0 completed and
+                    // 1 failed is a failure, not a completion.
+                    val finishedTitleRes = when {
+                        queue.failedCount > 0 && queue.completedCount == 0 ->
+                            R.string.queue_art_failed
+                        queue.failedCount > 0 ->
+                            R.string.queue_art_finished_mixed
+                        else -> R.string.queue_art_completed
+                    }
+                    SectionCard(titleRes = finishedTitleRes) {
                         Text(
                             text = stringResource(
                                 R.string.queue_summary_text,
@@ -96,10 +106,39 @@ fun QueueScreen(
                                         style = MaterialTheme.typography.bodySmall
                                     )
                                 }
+                                // Show the error text when there is one, so a
+                                // failed item is not left unexplained. The
+                                // full output stays in History.
+                                item.result?.stderr?.takeIf { it.isNotBlank() }?.let { stderr ->
+                                    Text(
+                                        text = stderr.take(200),
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                }
+                            }
+                            // A finished item's chip must show its actual
+                            // outcome (Failed, Permission denied, Unknown,
+                            // ...), not a generic green "Done" that hides
+                            // a failure.
+                            val chipLabelRes = if (
+                                item.status == ArtCompilationManager.QueueStatus.DONE &&
+                                item.result != null
+                            ) {
+                                outcomeLabelRes(item.result.interpret())
+                            } else {
+                                queueStatusLabelRes(item.status)
+                            }
+                            val chipTone = if (
+                                item.status == ArtCompilationManager.QueueStatus.DONE &&
+                                item.result != null
+                            ) {
+                                outcomeTone(item.result.interpret())
+                            } else {
+                                queueStatusTone(item.status)
                             }
                             StatusChip(
-                                label = stringResource(queueStatusLabelRes(item.status)),
-                                tone = queueStatusTone(item.status)
+                                label = stringResource(chipLabelRes),
+                                tone = chipTone
                             )
                         }
                     }
