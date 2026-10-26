@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+        android:maxSdkVersion="30" />
+    <!-- Package visibility: narrow queries, not a blanket list. QUERY_ALL_PACKAGES
+         is declared only for API <= 30 where it is meaningful; on API 31+ the
+         <queries> below govern visibility (see README limitations). -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+        </intent>
+    </queries>
+    <application
+        android:name=".DexBoostApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.DexBoost">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.DexBoost">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <provider
+            android:name="rikka.shizuku.ShizukuProvider"
+            android:authorities="${applicationId}.shizuku"
+            android:enabled="true"
+            android:exported="true"
+            android:multiprocess="false"
+            android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
+        <!-- UserService started by the Shizuku server. Exported so the
+             server (shell uid) can start it; the service itself only
+             runs validated ART compilation commands, and privilege
+             comes from Shizuku starting it, not from this declaration. -->
+        <service
+            android:name=".shizuku.PrivilegedCommandService"
+            android:exported="true" />
+    </application>
+</manifest>
